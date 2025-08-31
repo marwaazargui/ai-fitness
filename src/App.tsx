@@ -1,16 +1,32 @@
 import "./App.css";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import AuthLandingPage from "./components/auth/AuthLandingPage";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import BasicTable from "./pages/Meals/MealsList";
+import Main from "./components/SideBar/Main";
+import MealsPage from "./pages/Meals/MealsList";
+import WorkoutsPage from "./pages/Workouts/workoutsList";
+import Dashboard from "./pages/Dashboard/dashboard";
+import Profile from "./pages/Profile/ProfileHeader";
+
 function AppContent() {
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/*" element={<AuthLandingPage />} />
-      </Routes>
-    </>
+    <Routes>
+      {/* Redirect root to login */}
+      {/* <Route path="/" element={<Navigate to="/login" replace />} /> */}
+
+      {/* Auth landing page */}
+      {/* <Route path="/*" element={<AuthLandingPage />} /> */}
+
+      {/* Sidebar layout with nested routes */}
+      <Route element={<Main />}>
+        <Route path="meal" element={<MealsPage />} />
+        <Route path="Workout" element={<WorkoutsPage />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="profile/account" element={<Profile />} />
+      </Route>
+    </Routes>
   );
 }
+
 function App() {
   return (
     <BrowserRouter>
@@ -18,4 +34,5 @@ function App() {
     </BrowserRouter>
   );
 }
+
 export default App;

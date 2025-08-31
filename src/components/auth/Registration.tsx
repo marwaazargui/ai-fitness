@@ -1,44 +1,8 @@
-import React, { useState } from "react";
-import MainPic from "../../assets/images/MainPic.png";
 import { Link } from "react-router-dom";
+import MainPic from "../../assets/images/MainPic.png";
+import ReactPhoneInput from "react-phone-input-2";
 
-const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setpassword] = useState("");
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-    {}
-  );
-  const validateEmail = (email: any) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex?.test(email);
-  };
-  const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e?.preventDefault();
-    // Reset errors
-    setErrors({});
-    // Validate email
-    if (!email) {
-      setErrors({ email: "Email is required" });
-      return;
-    }
-    if (!validateEmail(email)) {
-      setErrors({ email: "Please enter a valid email address" });
-      return;
-    }
-    setIsLoading(true);
-    // Simulate API call
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      // Mock authentication success
-      console.log("Email authentication successful for:", email);
-    } catch (error) {
-      setErrors({ email: "Authentication failed. Please try again." });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+const Registration = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Mobile Header - Only visible on mobile/tablet */}
@@ -84,15 +48,50 @@ const LoginScreen = () => {
             {/* Login Form Header */}
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-gray-800 mb-2">
-                Log In to FitOn
+                Sign Up to FitOn
               </h2>
               <p className="text-gray-600">
                 Welcome back! Please enter your details.
               </p>
             </div>
             {/* Login Form */}
-            <form onSubmit={handleEmailSubmit} className="space-y-6">
+            <form onSubmit={(e: any) => {
+                e.preventDefault()
+                console.log(e.values)}
+                } className="space-y-6">
               {/* Email Input */}
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700  text-left"
+                >
+                  First name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Enter your First Name"
+                  className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 border-gray-300'
+                  }`}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700  text-left"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Enter your Last Name"
+                  className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 border-gray-300'
+                  }`}
+                  required
+                />
+              </div>
               <div className="space-y-2">
                 <label
                   htmlFor="email"
@@ -104,16 +103,27 @@ const LoginScreen = () => {
                   id="email"
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e?.target?.value)}
-                  className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 ${
-                    errors?.email ? "border-red-500" : "border-gray-300"
+                  className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 border-gray-300'
                   }`}
                   required
                 />
-                {errors?.email && (
-                  <p className="text-sm text-red-600">{errors?.email}</p>
-                )}
+              </div>
+              <div className="space-y-2">
+                  <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700  text-left"
+                >
+                  Phone
+                </label>
+                <ReactPhoneInput
+                  country={"ca"}
+                  onlyCountries={["ca"]}
+                  disableDropdown={true}
+                  countryCodeEditable={false}
+                  specialLabel="" // 👈 removes the "Phone" label
+                  inputClass="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#29abe2] focus:border-[#29abe2] transition-all duration-300"
+                  inputStyle={{ width: "100%", height: "43px" }}
+                />
               </div>
               <div className="space-y-2">
                 <label
@@ -126,25 +136,33 @@ const LoginScreen = () => {
                   id="password"
                   type="paswsord"
                   placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setpassword(e?.target?.value)}
+                  className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 border-gray-300'
+                  }`}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 text-left"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="paswsord"
+                  placeholder="Enter your Confirm Password"
                   className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 border-gray-300'
                   }`}
                   required
                 />
               </div>
               {/* Continue Button */}
-
               <button
                 type="submit"
-                disabled={isLoading}
                 className="w-full h-12 text-lg font-semibold text-white bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-all duration-200 flex items-center justify-center"
               >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  "Login"
-                )}
+                Sign Up
               </button>
             </form>
             {/* Divider */}
@@ -158,10 +176,10 @@ const LoginScreen = () => {
               <p className="text-gray-600">
                 Don't have an account?{" "}
                 <Link
-                  to={"/registartion"}
+                  to={"/login"}
                   className="text-pink-500 hover:text-pink-600 font-medium transition-colors duration-150"
                 >
-                  Sign Up
+                  Login
                 </Link>
               </p>
             </div>
@@ -171,4 +189,4 @@ const LoginScreen = () => {
     </div>
   );
 };
-export default LoginScreen;
+export default Registration;
