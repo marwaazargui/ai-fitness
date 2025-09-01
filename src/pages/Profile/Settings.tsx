@@ -1,36 +1,110 @@
-import React, { useState } from 'react';
-import type { ChangeEvent } from 'react';
-import DefaultProfile from '../../assets/images/DefaultProfile.png'; // Adjust the path if needed
+import React, { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
+import DefaultProfile from "../../assets/images/DefaultProfile.png"; // Adjust the path if needed
+import useProfile from "../../hooks/useProfile";
+import Swal from "sweetalert2"; // Import SweetAlert2
+import { get } from "react-hook-form";
 
-const Settings: React.FC = () => {
+interface ProfileProps {
+  profile:
+    | {
+        firstName: string;
+        lastName: string;
+        email: string;
+        profilePicture?: string | null;
+      }
+    | null
+    | undefined; // The prop type for the component
+}
+
+const Settings = ({ profile }: ProfileProps) => { // Use destructuring for clearer prop access
   const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
+const { uploadPicture ,getProfileData , updateProfile, error} = useProfile();
+  // Use a state variable to hold form data, initialized with props
+  const [formData, setFormData] = useState({
+    firstName: profile?.firstName || '',
+    lastName: profile?.lastName || '',
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Use useEffect to set the initial avatar state from the profile prop
+  useEffect(() => {
+    if (profile?.profilePicture) {
+      setAvatar(profile.profilePicture);
+    }
+  }, [profile]); // Re-run this effect if the profile prop changes
+ const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    
+    // Call the `updateProfile` hook from useProfile
+    const result = await updateProfile(formData);
 
-    setTimeout(() => {
-      setLoading(false);
-      alert('Profile saved!');
-    }, 1500);
+    if (result.success) {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "Profile updated successfully.", // This message is hardcoded, but you can change it
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      getProfileData(); // Refresh profile data after successful update
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: result.error,
+      });
+    }
   };
 
-  const handleAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+  // Function to handle changes in the input fields
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  // Handle input changes for form fields
+ const handleAvatarChange = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Step 1: Create a local preview immediately
       const reader = new FileReader();
       reader.onload = (ev) => setAvatar(ev.target?.result as string);
-      reader.readAsDataURL(e.target.files[0]);
+      reader.readAsDataURL(file);
+
+      // Step 2: Call the Redux thunk to upload the file
+      const result = await uploadPicture(file);
+
+      if (result.success) {
+        getProfileData(); // Refresh profile data after successful upload
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Profile picture uploaded successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: result.error,
+        });
+      }
     }
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-14 ">
+    <div className="max-w-xl mx-auto mt-14">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Edit Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Editable Avatar */}
         <div className="flex items-center gap-6">
           <div className="relative">
+            {/* Display avatar state, which will be the new file or the existing profile picture */}
             <img
               src={avatar || DefaultProfile}
               alt="Avatar"
@@ -72,16 +146,26 @@ const Settings: React.FC = () => {
         {/* Name Inputs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">First Name</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              First Name
+            </label>
             <input
+              name="firstName" // Add a name attribute
+              value={formData.firstName}
+              onChange={handleInputChange} // Add onChange handler
               type="text"
               placeholder="First name"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2 text-gray-700">Last Name</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700">
+              Last Name
+            </label>
             <input
+              name="lastName" // Add a name attribute
+              value={formData.lastName}
+              onChange={handleInputChange} // Add onChange handler
               type="text"
               placeholder="Last name"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400 transition"
@@ -91,8 +175,11 @@ const Settings: React.FC = () => {
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-700">Email</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">
+            Email
+          </label>
           <input
+            value={profile?.email || ''} // Use the prop value for email
             type="email"
             placeholder="Email"
             disabled

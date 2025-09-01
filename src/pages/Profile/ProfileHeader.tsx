@@ -1,31 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Overview from "./Overview"; // import your Overview component
 import UserInfo from "./UserInfo";
 import { Settings } from "./Settings";
 import DefaultProfile from "../../assets/images/DefaultProfile.png" // <-- Add this line
+import useProfile from "../../hooks/useProfile";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
+  const {getProfileData,profile,loading,error}= useProfile();
+  useEffect(() => {
+    // Fetch profile data when component mounts z}
+    getProfileData();
+  }, []);
 
+  const handleSwitchToSettings = () => {
+    setActiveTab("settings");
+  };
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
       {/* Header Section */}
       <div className="flex items-start gap-6 mb-8">
         {/* Profile Image */}
         <div className="relative">
+          {profile?.profilePicture ? (
+            <>
           <img
-            src={DefaultProfile}
+            src={profile.profilePicture}
             alt="Profile"
-            className="w-32 h-32 rounded-lg object-cover"
+            className="w-32 h-32 rounded-lg object-cover" 
           />
           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+          </>): (
+            <>
+            <img
+              src={DefaultProfile}
+              alt="Profile"
+              className="w-32 h-32 rounded-lg object-cover"
+            />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+            </>
+          )
+            }
+         
         </div>
 
         {/* Profile Info */}
         <div className="flex-1">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900">Max Smith</h1>
+              <h1 className="text-2xl font-bold text-gray-900">{profile?.firstName} {profile?.lastName}</h1>
             </div>
           </div>
         </div>
@@ -70,10 +93,10 @@ export default function ProfilePage() {
       {/* Render Tab Content */}
       <div className="mt-6">
         {activeTab === "overview" && (
-          <Overview switchToSettings={() => setActiveTab("settings")} />
+        <Overview profile={profile} switchToSettings={handleSwitchToSettings} />
         )}
-        {activeTab === "userinfo" && <UserInfo />}
-        {activeTab === "settings" && <Settings />}
+        {activeTab === "userinfo" && <UserInfo  />}
+        {activeTab === "settings" && <Settings profile={profile}/>}
       </div>
     </div>
   );

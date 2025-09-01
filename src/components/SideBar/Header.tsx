@@ -1,7 +1,9 @@
 import { ChevronDown, Menu } from "lucide-react";
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DefaultProfile from "../../assets/images/DefaultProfile.png" // <-- Add this line
+import DefaultProfile from "../../assets/images/DefaultProfile.png"; // <-- Add this line
+import { useAuth } from "../../hooks/useAuth";
+import useProfile from "../../hooks/useProfile";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -11,6 +13,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
   const desktopDropdownRef = useRef<HTMLDivElement>(null);
+  const { logout } = useAuth();
+
+const {getProfileData,profile}= useProfile();
+  useEffect(() => {
+    getProfileData();
+  } , []);
 
   return (
     <div className="fixed top-0 right-0 left-0 lg:left-40 h-12 bg-white border-b border-gray-200 z-30">
@@ -45,34 +53,30 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <div className="h-7 w-7 rounded-full overflow-hidden">
-                     <img
-                    src={DefaultProfile}
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                {/* {profile?.basicProfile?.profilePicture ? (
+                {profile?.profilePicture ? (
                   <img
-                    src={''}
+                    src={profile?.profilePicture}
                     alt="Profile"
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="h-full w-full bg-[#DBEAFE] text-[#29ABE2] flex items-center justify-center font-medium text-xs">
-                    {'Marwa'} {"Azargui"}
-                  </div>
-                )} */}
-                <div className="h-full w-full bg-[#DBEAFE] text-[#29ABE2] flex items-center justify-center font-medium text-xs">
-                  {"Marwa"} {"Azargui"}
-                </div>
+                  <img
+                    src={DefaultProfile}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                )}
               </div>
               <div className="flex items-center gap-1 ">
                 <div className="flex  flex-col items-end">
                   <span className="text-xs font-medium text-gray-700">
-                    {"Marwa"} {"Azargui"}
+                    {profile?.firstName} {profile?.lastName}
                   </span>
                 </div>
                 <ChevronDown
-                  className={`h-3.5  w-3.5 text-gray-500 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`}
+                  className={`h-3.5  w-3.5 text-gray-500 transition-transform ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
                 />
               </div>
             </div>
@@ -82,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               <div className="absolute mt-2 right-0 w-64 bg-white rounded-lg shadow-lg border border-gray-100 py-2 transition-all duration-200">
                 <div className="px-4 py-3 border-b border-gray-100">
                   <h3 className="text-base font-medium text-gray-900">
-                    {"Marwa Azargui"}
+                    {profile?.firstName} {profile?.lastName}
                   </h3>
                 </div>
 
@@ -103,6 +107,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     id="logout-button"
                     onClick={() => {
                       setIsDropdownOpen(false);
+                      logout();
                     }}
                     className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 text-left"
                   >
