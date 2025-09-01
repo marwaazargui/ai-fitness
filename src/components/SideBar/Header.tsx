@@ -1,6 +1,7 @@
 import { ChevronDown, Menu } from "lucide-react";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DefaultProfile from "../../assets/images/DefaultProfile.png" // <-- Add this line
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -44,6 +45,11 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               <div className="h-7 w-7 rounded-full overflow-hidden">
+                     <img
+                    src={DefaultProfile}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
                 {/* {profile?.basicProfile?.profilePicture ? (
                   <img
                     src={''}

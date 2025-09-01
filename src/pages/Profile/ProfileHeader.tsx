@@ -1,7 +1,4 @@
 import { useState } from "react";
-import { CheckCircle, ArrowUp, ArrowDown, MoreHorizontal } from "lucide-react";
-import { Button } from "./../../UI/Button";
-import { Link } from "react-router-dom";
 import Overview from "./Overview"; // import your Overview component
 import UserInfo from "./UserInfo";
 import { Settings } from "./Settings";

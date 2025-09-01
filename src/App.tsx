@@ -1,6 +1,5 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import BasicTable from "./pages/Meals/MealsList";
 import Main from "./components/SideBar/Main";
 import MealsPage from "./pages/Meals/MealsList";
 import WorkoutsPage from "./pages/Workouts/workoutsList";

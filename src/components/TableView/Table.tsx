@@ -1,80 +1,56 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Table from "rc-table"; // rc-table import
+import "./ModernTable.css"; // <-- Add this line
 
+// The new column type for rc-table
 export interface Column<T> {
-  header: string;
-  accessor: keyof T;
+  title: string;
+  dataIndex: keyof T;
   align?: "left" | "right" | "center";
-  render?: (value: any, row: T) => React.ReactNode;
+  render?: (value: any, row: T, index: number) => React.ReactNode;
 }
 
-interface CustomTableProps<T> {
+interface ModernTableProps<T> {
   columns: Column<T>[];
   data: T[];
 }
 
-export default function CustomTable<T extends { [key: string]: any }>({
+export default function ModernTable<T extends { [key: string]: any }>({
   columns,
   data,
-}: CustomTableProps<T>) {
+}: ModernTableProps<T>) {
   return (
     <Box
       sx={{
         display: "flex",
         justifyContent: "center",
-        padding: 4,
+        padding: { xs: 2, md: 4 },
       }}
     >
-      <Box sx={{ width: "100%", maxWidth: 900 }}>
-        <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: 3 }}>
-          <Table aria-label="custom table">
-            <TableHead>
-              <TableRow sx={{ backgroundColor: "#f3e8ff" }}>
-                {columns.map((col) => (
-                  <TableCell key={col.header} align={col.align || "left"}>
-                    <b>{col.header}</b>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    align="center"
-                    sx={{ py: 3, color: "text.secondary" }}
-                  >
-                    No data found.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                data.map((row, idx) => (
-                  <TableRow
-                    key={idx}
-                    hover
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    {columns.map((col) => (
-                      <TableCell key={col.header} align={col.align || "left"}>
-                        {col.render
-                          ? col.render(row[col.accessor], row)
-                          : row[col.accessor]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+      <Box>
+        <Paper
+          sx={{
+            borderRadius: 6,
+            boxShadow: "0 6px 32px 0 rgba(30,41,59,0.10)",
+            background: "linear-gradient(90deg, #f8fafc 70%, #f1f5f9 100%)",
+            border: "1px solid #e5e7eb",
+            padding: { xs: 2, md: 4 },
+            minWidth: { xs: "300px", md: "600px" },
+          }}
+        >
+          <Table
+            columns={columns as any}
+            data={data}
+            emptyText="No data found."
+            rowKey={(record, index) => record.name || index} // Ensure unique keys
+            className="rc-table" // <--- Important: Add this
+            rowClassName={(record, index) =>
+              index % 2 === 0 ? "even-row" : "odd-row"
+            } // <--- Important: Add this
+          />
+        </Paper>
       </Box>
     </Box>
   );

@@ -20,10 +20,11 @@ const rows: Workout[] = [
 ];
 
 const columns: Column<Workout>[] = [
-  { header: "Workout Name", accessor: "name" },
-  { header: "Type", accessor: "type" },
-  { header: "Duration (min)", accessor: "duration", align: "right" },
-  { header: "Calories Burned", accessor: "caloriesBurned", align: "right" },
+  // Corrected properties to match the new `Column` interface
+  { title: "Workout Name", dataIndex: "name" },
+  { title: "Type", dataIndex: "type" },
+  { title: "Duration (min)", dataIndex: "duration", align: "right" },
+  { title: "Calories Burned", dataIndex: "caloriesBurned", align: "right" },
 ];
 
 export default function WorkoutsPage() {

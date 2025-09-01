@@ -1,0 +1,82 @@
+/* ModernTable.css */
+
+.rc-table {
+  width: 100%;
+  border-collapse: separate; /* Allows border-radius on cells */
+  border-spacing: 0;
+  /* Removed top-level border as Paper component will provide it */
+  font-family: 'Inter', sans-serif; /* Example modern font */
+}
+
+/* Table Header Styles */
+.rc-table-thead > tr > th {
+  font-weight: 700;
+  font-size: 0.95rem; /* Slightly smaller for a modern feel */
+  color: #4a5568; /* Darker grey for better contrast */
+  padding: 14px 18px; /* Adjusted padding for better spacing */
+  background: #fdfefe; /* Lighter background for header */
+  border-bottom: 2px solid #edf2f7; /* Thicker, subtle bottom border */
+  text-align: left; /* Default align left for headers */
+  letter-spacing: 0.025em; /* Tailwind's tracking-wide */
+  text-transform: uppercase; /* Uppercase headers often look modern */
+}
+
+/* Align specific header cells */
+.rc-table-thead > tr > th.rc-table-align-right {
+    text-align: right;
+}
+.rc-table-thead > tr > th.rc-table-align-center {
+    text-align: center;
+}
+
+
+/* Table Body Row Styles */
+.rc-table-tbody > tr {
+  transition: background-color 0.2s ease-in-out;
+}
+
+.rc-table-tbody > tr:hover {
+  background-color: #f0f4f8 !important; /* Lighter hover for less distraction */
+}
+
+/* Table Body Cell Styles */
+.rc-table-tbody > tr > td {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #2d3748; /* Darker text for readability */
+  padding: 14px 18px; /* Consistent padding with header */
+  border-bottom: 1px solid #edf2f7; /* Lighter border for subtler separation */
+  background-color: transparent; /* Ensure cells are transparent to show row background */
+}
+
+/* Striped Row Backgrounds (applied via rowClassName in JS) */
+.even-row {
+  background-color: #ffffff; /* White background for even rows */
+}
+
+.odd-row {
+  background-color: #fbfcfe; /* Very light subtle tint for odd rows */
+}
+
+/* Remove bottom border for the last row's cells */
+.rc-table-tbody > .rc-table-row:last-child > td {
+  border-bottom: 0;
+}
+
+/* Empty State Styling */
+.rc-table-empty-row > td {
+  text-align: center;
+  padding: 40px 0; /* More vertical padding for empty state */
+  color: #a0aec0; /* Lighter grey for empty text */
+  font-size: 1rem;
+  background: #ffffff;
+  border-bottom: 0; /* No border for empty row */
+}
+
+/* Specific styling for the actions column to prevent default text alignment from interfering */
+.rc-table-tbody > tr > td.rc-table-align-center {
+    text-align: center;
+}
+.rc-table-tbody > tr > td.rc-table-align-right {
+    text-align: right;
+}

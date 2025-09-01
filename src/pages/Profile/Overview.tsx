@@ -1,13 +1,11 @@
 import { Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
 
 interface OverviewProps {
   switchToSettings: () => void;
 }
 
 export default function Overview({ switchToSettings }: OverviewProps) {
-  const navigate = useNavigate();
 
   return (
     <div className="max-w-2xl mx-auto mt-14 ">
